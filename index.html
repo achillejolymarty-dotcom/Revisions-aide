@@ -3,111 +3,141 @@
 <head>
   <meta charset="UTF-8">
   <title>EasyStudy</title>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      font-family: system-ui, sans-serif;
       background: #0f172a;
       color: #e5e7eb;
-      margin: 0;
-      padding: 0;
     }
-
     .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 60px 20px;
+      max-width: 1000px;
+      margin: auto;
+      padding: 40px;
     }
-
-    h1 {
-      font-size: 42px;
-      margin-bottom: 10px;
-    }
-
-    p {
-      font-size: 18px;
-      color: #cbd5f5;
-      margin-bottom: 30px;
-    }
-
-    textarea {
+    input, textarea, button {
       width: 100%;
-      height: 220px;
-      padding: 15px;
-      border-radius: 8px;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 6px;
       border: none;
-      font-size: 16px;
-      resize: vertical;
+      font-size: 15px;
     }
-
     button {
-      margin-top: 20px;
       background: #6366f1;
       color: white;
-      border: none;
-      padding: 14px 24px;
-      font-size: 16px;
-      border-radius: 8px;
       cursor: pointer;
     }
-
-    button:hover {
-      background: #4f46e5;
-    }
-
-    #result {
-      margin-top: 40px;
-      padding: 25px;
+    .card {
       background: #020617;
+      padding: 25px;
       border-radius: 8px;
-      white-space: pre-wrap;
-      display: none;
+      margin-bottom: 30px;
     }
-
-    .loader {
-      margin-top: 30px;
-      font-style: italic;
-      color: #a5b4fc;
+    .tabs button {
+      width: auto;
+      margin-right: 10px;
+    }
+    #app { display: none; }
+    #result, #chatBox {
+      white-space: pre-wrap;
+      margin-top: 15px;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>EasyStudy</h1>
-    <p>Transforme ton cours en fiche de révision claire, instantanément.</p>
+<div class="container">
 
-    <textarea id="course" placeholder="Colle ton cours ici…"></textarea>
-
-    <button onclick="generate()">Générer la fiche</button>
-
-    <div id="loader" class="loader" style="display:none;">
-      Génération en cours…
-    </div>
-
-    <div id="result"></div>
+  <!-- AUTH -->
+  <div id="auth" class="card">
+    <h2>Connexion / Inscription</h2>
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Mot de passe">
+    <button onclick="login()">Connexion</button>
+    <button onclick="register()">Créer un compte</button>
+    <p id="authMsg"></p>
   </div>
 
-  <script>
-    function generate() {
-      const text = document.getElementById("course").value;
-      if (!text.trim()) {
-        alert("Colle un cours avant de générer.");
-        return;
-      }
+  <!-- APP -->
+  <div id="app">
 
-      document.getElementById("loader").style.display = "block";
-      document.getElementById("result").style.display = "none";
+    <div class="tabs">
+      <button onclick="show('revision')">Fiche de révision</button>
+      <button onclick="show('chat')">Prof IA</button>
+      <button onclick="logout()">Déconnexion</button>
+    </div>
 
-      // Simulation (backend plus tard)
-      setTimeout(() => {
-        document.getElementById("loader").style.display = "none";
-        document.getElementById("result").style.display = "block";
-        document.getElementById("result").innerText =
-          "FICHE DE RÉVISION (exemple)\n\n• Idées principales\n• Définitions clés\n• Points à retenir\n\n(Le backend IA arrive juste après)";
-      }, 1500);
+    <!-- FICHE -->
+    <div id="revision" class="card">
+      <h2>Générer une fiche de révision</h2>
+      <textarea id="course" placeholder="Colle ton cours ici"></textarea>
+      <button onclick="generateRevision()">Générer</button>
+      <div id="result"></div>
+    </div>
+
+    <!-- CHAT -->
+    <div id="chat" class="card" style="display:none">
+      <h2>Discuter avec le prof IA</h2>
+      <textarea id="question" placeholder="Pose ta question"></textarea>
+      <button onclick="askProf()">Envoyer</button>
+      <div id="chatBox"></div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // 🔐 SUPABASE (À REMPLACER)
+  const supabase = supabase.createClient(
+    "https://TON-PROJET.supabase.co",
+    "PUBLIC_ANON_KEY"
+  );
+
+  async function register() {
+    const { error } = await supabase.auth.signUp({
+      email: email.value,
+      password: password.value
+    });
+    authMsg.innerText = error ? error.message : "Compte créé. Connecte-toi.";
+  }
+
+  async function login() {
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.value,
+      password: password.value
+    });
+    if (error) authMsg.innerText = error.message;
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    location.reload();
+  }
+
+  supabase.auth.onAuthStateChange((_, session) => {
+    if (session) {
+      auth.style.display = "none";
+      app.style.display = "block";
     }
-  </script>
+  });
+
+  function show(id) {
+    revision.style.display = "none";
+    chat.style.display = "none";
+    document.getElementById(id).style.display = "block";
+  }
+
+  function generateRevision() {
+    result.innerText = "Génération IA en cours… (Make à brancher)";
+  }
+
+  function askProf() {
+    chatBox.innerText = "Réponse du prof IA… (Make à brancher)";
+  }
+</script>
 
 </body>
 </html>
-
