@@ -1,1 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>EasyStudy</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #cbd5f5;
+      margin-bottom: 30px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 220px;
+      padding: 15px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      resize: vertical;
+    }
+
+    button {
+      margin-top: 20px;
+      background: #6366f1;
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #4f46e5;
+    }
+
+    #result {
+      margin-top: 40px;
+      padding: 25px;
+      background: #020617;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      display: none;
+    }
+
+    .loader {
+      margin-top: 30px;
+      font-style: italic;
+      color: #a5b4fc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>EasyStudy</h1>
+    <p>Transforme ton cours en fiche de révision claire, instantanément.</p>
+
+    <textarea id="course" placeholder="Colle ton cours ici…"></textarea>
+
+    <button onclick="generate()">Générer la fiche</button>
+
+    <div id="loader" class="loader" style="display:none;">
+      Génération en cours…
+    </div>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function generate() {
+      const text = document.getElementById("course").value;
+      if (!text.trim()) {
+        alert("Colle un cours avant de générer.");
+        return;
+      }
+
+      document.getElementById("loader").style.display = "block";
+      document.getElementById("result").style.display = "none";
+
+      // Simulation (backend plus tard)
+      setTimeout(() => {
+        document.getElementById("loader").style.display = "none";
+        document.getElementById("result").style.display = "block";
+        document.getElementById("result").innerText =
+          "FICHE DE RÉVISION (exemple)\n\n• Idées principales\n• Définitions clés\n• Points à retenir\n\n(Le backend IA arrive juste après)";
+      }, 1500);
+    }
+  </script>
+
+</body>
+</html>
 
